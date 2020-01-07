@@ -1,0 +1,6 @@
+*{
+  /* background-color: white; */
+  --main-bg-color: pink;
+  --secondary-bg-color: white;
+  /* background-color: var(--main-bg-color); */
+}
