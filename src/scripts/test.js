@@ -1,7 +1,8 @@
 
 var tester= {
   test(){
-  console.log("FUNCTION CALLED.");
+    var x="test"
+  console.log(`FUNCTION CALLED. ${x}`);
   }
 }
 
