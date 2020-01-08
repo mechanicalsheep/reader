@@ -1,37 +1,32 @@
 <template>
 <v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh;">
-  <!-- <vue-typer :text=this.text :repeat='0' :type-delay="100" /> -->
-  <!-- {{splitter()}} -->
+
   <span v-for="msg in textArray">
-    <span v-html="msg"> </span>
+    <span v-html="msg" v-on:click="dictionaryModal(msg)"> </span>
+
+
   </span>
+
+
 <v-dialog
   v-model="dialog"
   scrollable
   persistent :overlay="false"
-  max-width="100px;"
   transition="dialog-transition"
+  width="50vh"
 >
-<template v-slot:activator="{ on }">
-       <v-btn
-         color="red lighten-2"
-         dark
-         v-on="on"
-       >
-         Click Me
-       </v-btn>
-     </template>
 
-     <v-card style="width:50vh; height:50vh;">
+
+     <v-card >
        <v-card-title
          class="headline grey lighten-2"
          primary-title
        >
-         Privacy Policy
+         {{modalTitle}}
        </v-card-title>
 
        <v-card-text>
-         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+         {{wordMeaning}}
        </v-card-text>
 
        <v-divider></v-divider>
@@ -66,27 +61,33 @@ export default{
   mounted(){
     this.splitter();
     this.formatter();
-    this.linker();
+    // this.linker();
     tester.test();
-    diction.find("f");
+    // diction.find("f");
 
 
     // var word = dict.definitions("awesome");
     // console.log(word);
 
   },
+
   data(){
 
     return({
 
-      text:"hello, is <b>this</b> working?",
+      text:"I like my school. it is beautiful",
       textArray:'',
-      dialog:''
+      dialog:'',
+      searchWord:'',
+      modalTitle:'',
+      wordMeaning:'',
+
 
     }
     )
   },
   methods:{
+
     //splits each word seperately this will be used to work on each word seperately..
 
     splitter(){
@@ -96,7 +97,7 @@ export default{
     formatter(){
 
       var count = this.textArray.length;
-      console.log("Count starts as "+ count);
+      // console.log("Count starts as "+ count);
       for(var i=0; i<count; i++){
         if(this.textArray[i+1]===","
         || this.textArray[i+1]===" "
@@ -121,8 +122,25 @@ export default{
     },
 //link each word in the array with the dictionary.
     linker(){
-      this.textArray[0]="<a href='www.google.com'>"+this.textArray[0]+"</a>"
+      for(var i=0; i<this.textArray.length; i++){
+        this.textArray[i]=`<v-btn v-on:click="dictionaryModal("${this.textArray[i]}")">`+this.textArray[i]+"</v-btn>";
+
+      }
+    },
+      dictionaryModal(word)
+      {
+        this.modalTitle=word;
+        this.searchWord=diction.find("search");
+      diction.find(word)
+      .then(meaning=>{
+        this.wordMeaning=meaning;
+        this.dialog=true;
+      });
+
+
+
+      }
     }
   }
-}
+
 </script>
