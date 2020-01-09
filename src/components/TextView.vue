@@ -2,7 +2,7 @@
 <v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh;">
 
   <span v-for="msg in textArray">
-    <span v-html="msg" v-on:click="dictionaryModal(msg)"> </span>
+    <span v-html="msg" v-on:click="dictionaryModal(msg)" :id="removeTagsByWord(msg)" :class="'word'+removeTagsByWord(msg)"> </span>
 
 
   </span>
@@ -11,7 +11,7 @@
 <v-dialog
   v-model="dialog"
   scrollable
-  persistent :overlay="false"
+  :overlay="false"
   transition="dialog-transition"
   width="50vh"
 >
@@ -25,9 +25,14 @@
          {{modalTitle}}
        </v-card-title>
 
-       <v-card-text>
+       <v-card-text v-if="wordMeaning!=null">
          {{wordMeaning}}
+         <!-- <v-progress-circular indeterminate align="center"></v-progress-circular> -->
        </v-card-text>
+
+              <v-card-text v-else style="text-align:center;">
+                <v-progress-circular indeterminate align="center"></v-progress-circular>
+              </v-card-text>
 
        <v-divider></v-divider>
 
@@ -38,7 +43,7 @@
            text
            @click="dialog = false"
          >
-           I accept
+           Ok!
          </v-btn>
        </v-card-actions>
      </v-card>
@@ -49,25 +54,21 @@
 </template>
 
 <script>
-// import {VueTyper} from 'vue-typer';
+
 import tester from './../scripts/test';
 import diction from './../scripts/merdic';
-// import dict from './../scripts/dictionary';
+
 export default{
   name:'TextView',
   components: {
-    // VueTyper
+
   },
   mounted(){
     this.splitter();
+
+    this.removeTagsByIndex(2);
     this.formatter();
-    // this.linker();
-    tester.test();
-    // diction.find("f");
 
-
-    // var word = dict.definitions("awesome");
-    // console.log(word);
 
   },
 
@@ -75,10 +76,10 @@ export default{
 
     return({
 
-      text:"I like my school. it is beautiful",
+      text:"The brown fox jumped over the lazy dog the.",
       textArray:'',
       dialog:'',
-      searchWord:'',
+      // searchWord:'',
       modalTitle:'',
       wordMeaning:'',
 
@@ -93,7 +94,21 @@ export default{
     splitter(){
       this.textArray = this.text.replace(","," ,").replace("?"," ?").replace("."," .").replace("!"," !").split(" ");
     },
+bold(index){
+  this.textArray[index] = "<b>"+this.textArray[index]+"</b>";
+},
+removeTagsByIndex(index){
+  var untagged=this.textArray[index].replace( /(<([^>]+)>)/ig, '')
+  // console.log("untagged: "+ untagged);
+  return untagged;
 
+},
+removeTagsByWord(word){
+  var untagged=word.replace( /(<([^>]+)>)/ig, '');
+  // console.log("untagged: "+ untagged);
+  return untagged;
+
+},
     formatter(){
 
       var count = this.textArray.length;
@@ -109,32 +124,28 @@ export default{
         }
         else{
           this.textArray.splice(i+1,0," ");
-          console.log("add space after "+this.textArray[i]);
+          // console.log("add space after "+this.textArray[i]);
           count=this.textArray.length;
           i=i+1;
-          console.log("count now is: "+count);
+          // console.log("count now is: "+count);
         }
       }
         this.textArray.forEach(msg => {
-          console.log(msg);
+          // console.log(msg);
         })
-        console.log("Array size now: "+this.textArray.length);
+        // console.log("Array size now: "+this.textArray.length);
     },
-//link each word in the array with the dictionary.
-    linker(){
-      for(var i=0; i<this.textArray.length; i++){
-        this.textArray[i]=`<v-btn v-on:click="dictionaryModal("${this.textArray[i]}")">`+this.textArray[i]+"</v-btn>";
 
-      }
-    },
       dictionaryModal(word)
       {
-        this.modalTitle=word;
-        this.searchWord=diction.find("search");
-      diction.find(word)
+        var wordToProcess = this.removeTagsByWord(word);
+        this.modalTitle=wordToProcess
+        this.wordMeaning=null
+this.dialog=true;
+      diction.getMeaning(wordToProcess)
       .then(meaning=>{
         this.wordMeaning=meaning;
-        this.dialog=true;
+
       });
 
 
