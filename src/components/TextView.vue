@@ -1,12 +1,9 @@
 <template>
-<v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh;">
-
+<v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh; position:relative;">
+{{changeText}}
   <span v-for="msg in textArray">
     <span v-html="msg" v-on:click="dictionaryModal(msg)" :id="removeTagsByWord(msg)" :class="'word'+removeTagsByWord(msg)"> </span>
-
-
   </span>
-
 
 <v-dialog
   v-model="dialog"
@@ -25,7 +22,7 @@
          {{modalTitle}}
        </v-card-title>
 
-       <v-card-text v-if="wordMeaning!=null">
+       <v-card-text style="text-align:center; margin-top:18px;" v-if="wordMeaning!=null">
          {{wordMeaning}}
          <!-- <v-progress-circular indeterminate align="center"></v-progress-circular> -->
        </v-card-text>
@@ -49,50 +46,68 @@
      </v-card>
 </v-dialog>
 
+<!--<v-layout align-end fill-height >-->
+  <!--<v-text-field  v-model="$store.getters.getCurrentPage" placeholder="Enter text here." @keydown.enter="processText" >-->
+  <!--</v-text-field>-->
+<!--</v-layout>-->
 </v-container>
-
 </template>
 
 <script>
 
-import tester from './../scripts/test';
-import diction from './../scripts/merdic';
 
+import diction from './../scripts/merdic';
+import * as book from '../database/InvisibleAlligators';
 export default{
   name:'TextView',
   components: {
 
   },
   mounted(){
+      this.getBook(),
     this.splitter();
-
-    this.removeTagsByIndex(2);
     this.formatter();
 
 
   },
+    computed:{
+      changeText: function(){
+      this.text=book.pages[this.$store.getters.getCurrentPage].text;
+        }
+    },
+beforeUpdate(){
+this.processText();
+console.log("processed");
 
+},
   data(){
 
     return({
 
-      text:"The brown fox jumped over the lazy dog the.",
+      text:'load data...',
       textArray:'',
       dialog:'',
       // searchWord:'',
       modalTitle:'',
       wordMeaning:'',
+            Book:book,
 
 
     }
     )
   },
   methods:{
-
+processText(){
+  this.splitter();
+  this.formatter();
+},
     //splits each word seperately this will be used to work on each word seperately..
-
+getBook(){
+  // console.log(book.pages["0"]);
+},
     splitter(){
-      this.textArray = this.text.replace(","," ,").replace("?"," ?").replace("."," .").replace("!"," !").split(" ");
+    var currentPageText=book.pages[this.$store.getters.getCurrentPage].text;
+      this.textArray = currentPageText.toString().replace(","," ,").replace("?"," ?").replace("."," .").replace("!"," !").split(" ");
     },
 bold(index){
   this.textArray[index] = "<b>"+this.textArray[index]+"</b>";
@@ -142,7 +157,7 @@ removeTagsByWord(word){
         this.modalTitle=wordToProcess
         this.wordMeaning=null
 this.dialog=true;
-      diction.getMeaning(wordToProcess)
+      diction.GetMeaning(wordToProcess)
       .then(meaning=>{
         this.wordMeaning=meaning;
 
