@@ -1,5 +1,5 @@
 <template>
-<v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh; position:relative;">
+<v-container grid-list-xs,sm,md,lg,xl style="border: 1px solid green;  height:20vh; position:relative;"  @pageChanged="test()">
 {{changeText}}
   <span v-for="msg in textArray">
     <span v-html="msg" v-on:click="dictionaryModal(msg)" :id="removeTagsByWord(msg)" :class="'word'+removeTagsByWord(msg)"> </span>
@@ -70,9 +70,15 @@ export default{
 
 
   },
+  watch:{
+    text: function(){
+      console.log("text has changed");
+    }
+  },
     computed:{
       changeText: function(){
       this.text=book.pages[this.$store.getters.getCurrentPage].text;
+
         }
     },
 beforeUpdate(){
@@ -97,6 +103,9 @@ console.log("processed");
     )
   },
   methods:{
+    test(){
+      console.log("hello");
+    },
 processText(){
   this.splitter();
   this.formatter();

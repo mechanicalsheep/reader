@@ -27,6 +27,9 @@ export default{
          book: this.Book
       });
     },
+    methods:{
+
+    }
 
 
 }

@@ -30,12 +30,14 @@ data(){
 },
     methods:{
         nextPage(){
+          this.$root.$emit("pageChanged");
             console.log(Object.keys(Book.pages).length);
             if(this.page+1<Object.keys(Book.pages).length){
 
             this.page++;
             console.log("page is now: "+this.page)
             this.$store.commit("setCurrentPage",this.page);
+
             }
         },
         previousPage(){
