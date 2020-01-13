@@ -20,6 +20,8 @@
          primary-title
        >
          {{modalTitle}}
+         <v-spacer/>
+         {{pos}}
        </v-card-title>
 
        <v-card-text style="text-align:center; margin-top:18px;" v-if="wordMeaning!=null">
@@ -70,11 +72,8 @@ export default{
 
 
   },
-  watch:{
-    text: function(){
-      console.log("text has changed");
-    }
-  },
+
+
     computed:{
       changeText: function(){
       this.text=book.pages[this.$store.getters.getCurrentPage].text;
@@ -83,7 +82,8 @@ export default{
     },
 beforeUpdate(){
 this.processText();
-console.log("processed");
+
+
 
 },
   data(){
@@ -97,6 +97,8 @@ console.log("processed");
       modalTitle:'',
       wordMeaning:'',
             Book:book,
+            definitionJson:'',
+            pos:''
 
 
     }
@@ -166,11 +168,24 @@ removeTagsByWord(word){
         this.modalTitle=wordToProcess
         this.wordMeaning=null
 this.dialog=true;
-      diction.GetMeaning(wordToProcess)
-      .then(meaning=>{
-        this.wordMeaning=meaning;
+this.definitionJson=diction.GetLearnersJson(wordToProcess);
+// console.log(this.definitionJson.then(json=>{console.log(json)}));
 
-      });
+this.definitionJson.then(json=>{
+this.wordMeaning=diction.GetMeaningFromJson(json);
+this.pos=diction.GetPOS(json);
+  console.log(this.pos);
+  })
+
+// diction.GetMeaningFromJson(this.definitionJson).then(definition=>{
+//   this.wordMeaning=definition;
+// });
+// console.log(this.definitionJson);
+//       diction.GetMeaning(wordToProcess)
+//       .then(meaning=>{
+//         this.wordMeaning=meaning;
+//
+//       });
 
 
 
