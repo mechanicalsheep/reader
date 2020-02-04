@@ -47,15 +47,15 @@ export default{
             .then(data=>{
                 // this.$router.replace({name:"ReaderScreen"});
                 console.log("Success");
-                this.loginMessage="SUCCESS, USER SIGNED IN"
+                this.loginMessage="SUCCESS, USER SIGNED IN, Welcome: "+this.email
             })
             .catch(err=>{
                 this.error=err.message;
                 console.log(this.error);
-                this.loginMessage = "USER HAS FAILED TO LOG IN"
+                this.loginMessage = "USER HAS FAILED TO LOG IN ("+this.email+", "+this.password+ ")"
             });
         },
-
+     
          onDecode(content) {
           this.decodedContent = content
           var userArray = this.decodedContent.split(" ");
