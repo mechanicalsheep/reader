@@ -31,7 +31,8 @@ export default{
         password:"123456",
         error: null,
         decodedContent:'',
-        errorMessage:''
+        errorMessage:'',
+        loginMessage:''
 
         }
     },
@@ -46,15 +47,21 @@ export default{
             .then(data=>{
                 // this.$router.replace({name:"ReaderScreen"});
                 console.log("Success");
+                this.loginMessage="SUCCESS, USER SIGNED IN"
             })
             .catch(err=>{
                 this.error=err.message;
                 console.log(this.error);
+                this.loginMessage = "USER HAS FAILED TO LOG IN"
             });
         },
 
          onDecode(content) {
           this.decodedContent = content
+          var userArray = this.decodedContent.split(" ");
+          this.email = userArray[0];
+          this.password = userArray[1];
+          submit();
         },
 
         onInit(promise) {
