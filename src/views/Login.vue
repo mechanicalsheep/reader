@@ -2,21 +2,26 @@
 <div id="login" class="login">
 <h1> Login Page</h1>
 <h2>{{loginMessage}}</h2>
-<p>
-        Last result: <b>{{ decodedContent }}</b>
-      </p>
 
-      <p class="error">
-        {{ errorMessage }}
-      </p>
+<v-btn v-on:click="showTextFields=!showTextFields"><v-icon>mdi-textbox-password</v-icon></v-btn> 
+<v-btn v-on:click="showCamera=!showCamera"><v-icon>mdi-qrcode-scan</v-icon></v-btn>
 
+<div v-show="showCamera">
+<p>Last result: <b>{{ decodedContent }}</b></p>
+<p class="error">{{ errorMessage }}</p>
       <qrcode-stream @decode="onDecode" @init="onInit"></qrcode-stream>
+</div>
+
+<div v-show="showTextFields">
 <v-form @submit.prevent="submit">
-    
 <v-text-field type="email" v-model="email" placeholder="Email"></v-text-field>
 <v-text-field type="password" v-model="password" placeholder="Password"></v-text-field>
 <v-btn type="submit">Submit</v-btn>
 </v-form>
+
+</div>
+
+
 </div>
 </template>
 
@@ -32,7 +37,9 @@ export default{
         error: null,
         decodedContent:'',
         errorMessage:'',
-        loginMessage:'please enter login information'
+        loginMessage:'please enter login information',
+        showCamera:false,
+        showTextFields: false
 
         }
     },
