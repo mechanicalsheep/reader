@@ -1,7 +1,7 @@
 <template>
 <div id="login" class="login">
 <h1> Login Page</h1>
-
+<h2>{{loginMessage}}</h2>
 <p>
         Last result: <b>{{ decodedContent }}</b>
       </p>
@@ -32,7 +32,7 @@ export default{
         error: null,
         decodedContent:'',
         errorMessage:'',
-        loginMessage:''
+        loginMessage:'please enter login information'
 
         }
     },
