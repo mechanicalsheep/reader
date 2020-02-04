@@ -61,7 +61,7 @@ export default{
           var userArray = this.decodedContent.split(" ");
           this.email = userArray[0];
           this.password = userArray[1];
-          submit();
+          this.submit();
         },
 
         onInit(promise) {
