@@ -1,5 +1,6 @@
 <template>
 <div id="login" class="login">
+  <CardGenerator></CardGenerator>
 <h1> Login Page</h1>
 <h2>{{loginMessage}}</h2>
 
@@ -28,6 +29,9 @@
 <script>
 import firebase from "firebase"
 import {QrcodeStream} from 'vue-qrcode-reader'
+import CardGenerator from "../components/CardGenerator"
+import Encryption from "../scripts/encrypt"
+
 export default{
     name: 'Login',
     data(){
@@ -44,7 +48,8 @@ export default{
         }
     },
     components:{
-        QrcodeStream
+        QrcodeStream,
+        CardGenerator
     },
     methods:{
         submit(){
@@ -65,10 +70,13 @@ export default{
      
          onDecode(content) {
           this.decodedContent = content
-          var userArray = this.decodedContent.split(" ");
+          var Encryption = new Encryption();
+          var decrypted = Encryption.Decrypt(this.decodedContent);
+          var userArray = this.decrypted.split(" ");
           this.email = userArray[0];
           this.password = userArray[1];
           this.submit();
+          
         },
 
         onInit(promise) {
