@@ -6,9 +6,23 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect:'/dev'
+  },
+  {
     path: '/readerScreen',
     name: 'ReaderScreen',
     component: ReaderScreen
+  },
+  {
+    path: '/dev',
+    name: 'Dev',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: function () {
+      return import('../components/Dev.vue')
+    }
   },
   {
     path: '/about',
@@ -21,7 +35,7 @@ const routes = [
     }
   },
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: function(){
       return import('../views/Login.vue')
