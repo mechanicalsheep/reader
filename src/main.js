@@ -6,10 +6,11 @@ import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import './style/main.css';
 import db from './database';
-
+import Toasted from 'vue-toasted';
 
 Vue.config.productionTip = false
 
+Vue.use(Toasted)
 new Vue({
   router,
   store,

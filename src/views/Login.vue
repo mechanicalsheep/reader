@@ -1,74 +1,145 @@
 <template>
-<div id="login" class="login">
-  <CardGenerator></CardGenerator>
-<h1> Login Page</h1>
-<h2>{{loginMessage}}</h2>
+<v-container
+        fluid
+        fill-height
+      >
+        <v-layout
+          align-center
+          justify-center
+        >
+          <v-flex
+            xs12
+            sm8
+            md4
+          >
+            <v-card class="elevation-12">
+              <v-toolbar
+                color="#E91F63"
+                dark
+                flat
+              >
 
-<v-btn v-on:click="showTextFields=!showTextFields"><v-icon>mdi-textbox-password</v-icon></v-btn> 
-<v-btn v-on:click="showCamera=!showCamera"><v-icon>mdi-qrcode-scan</v-icon></v-btn>
+                <v-toolbar-title>Login</v-toolbar-title>
+                <v-spacer></v-spacer>
 
-<div v-show="showCamera">
-<p>Last result: <b>{{ decodedContent }}</b></p>
-<p class="error">{{ errorMessage }}</p>
+              <v-btn icon right :class="textClass" v-on:click="toggleActive('textClass')"><v-icon>mdi-textbox</v-icon></v-btn>
+              <v-btn icon right :class="qrScannerClass" v-on:click="toggleActive('qrScannerClass')"><v-icon>mdi-qrcode-scan</v-icon></v-btn>
+               
+              </v-toolbar>
+              <v-card-text>
+
+                <v-form v-show="showForm" @submit.prevent="submit()">
+                    <v-btn type="submit" hidden></v-btn>
+                  <v-text-field
+                    label="Email"
+                    name="email"
+                    prepend-icon="mdi-at"
+                    type="email"
+                    v-model="email"
+                  ></v-text-field>
+
+                  <v-text-field
+                    id="password"
+                    label="Password"
+                    name="password"
+                    prepend-icon="mdi-textbox-password"
+                    type="password"
+                    v-model="password"
+                  ></v-text-field>
+                </v-form>
+
+                <div v-show="showQrScanner">
+<!-- <p>Last result: <b>{{ decodedContent }}</b></p>
+<p class="error">{{ qrScannerError }}</p> -->
+<p class="error">{{ qrScannerError }}</p>
       <qrcode-stream @decode="onDecode" @init="onInit"></qrcode-stream>
 </div>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="#E91F63" style="color:white;" v-on:click="submit">Login</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    
 
-<div v-show="showTextFields">
-<v-form @submit.prevent="submit">
-<v-text-field type="email" v-model="email" placeholder="Email"></v-text-field>
-<v-text-field type="password" v-model="password" placeholder="Password"></v-text-field>
-<v-btn type="submit">Submit</v-btn>
-</v-form>
-
-</div>
-
-
-</div>
 </template>
 
+<style>
+.active{
+    background-color: rgb(153, 17, 63);
+    /* filter:brightness(10%); */
+}
+</style>
+
 <script>
-import firebase from "firebase"
-import {QrcodeStream} from 'vue-qrcode-reader'
-import CardGenerator from "../components/CardGenerator"
+
 import Encryption from "../scripts/encrypt"
+import {QrcodeStream} from 'vue-qrcode-reader'
+import firebase from "firebase"
+export default {
 
-export default{
     name: 'Login',
-    data(){
-        return{
-        email:"asd@asd.com",
-        password:"123456",
-        error: null,
-        decodedContent:'',
-        errorMessage:'',
-        loginMessage:'please enter login information',
-        showCamera:false,
-        showTextFields: false
-
-        }
-    },
     components:{
         QrcodeStream,
-        CardGenerator
+        // CardGenerator
     },
+data(){
+    return{
+        email:'asd@asd.com',
+        password:'123456',
+        textClass:'active',
+        qrScannerClass:'',
+        showForm:true,
+        showQrScanner:false,
+        qrScannerError:''
+       
+    }
+},
+
     methods:{
         submit(){
             firebase
             .auth()
             .signInWithEmailAndPassword(this.email, this.password)
             .then(data=>{
-                // this.$router.replace({name:"ReaderScreen"});
                 console.log("Success");
-                this.loginMessage="SUCCESS, USER SIGNED IN, Welcome: "+this.email
+                this.$toasted.success("SUCCESS, USER SIGNED IN, Welcome: "+this.email , {duration:6000})
+                this.$router.replace({name:"ReaderScreen"});
             })
             .catch(err=>{
                 this.error=err.message;
                 console.log(this.error);
-                this.loginMessage = "USER HAS FAILED TO LOG IN ("+this.email+", "+this.password+ ")"
+                // this.loginMessage = "USER HAS FAILED TO LOG IN ("+this.email+", "+this.password+ ")"
+                this.$toasted.error("Error logging in. Please make sure your username and password are correct", {duration:6000})
             });
         },
-     
-         onDecode(content) {
+       toggleActive(classname){
+           if(classname==="textClass" && this.textClass==='active'){
+               //donothing.
+           } 
+           else if(classname==="qrScannerClass" && this.qrScannerClass==='active'){
+               //also do nothing
+           }
+           else{
+
+               if(this.textClass=='active'){
+                   this.textClass='';
+                   this.qrScannerClass='active'
+                   this.showForm=false;
+                   this.showQrScanner=true
+               }
+               else{
+                   this.textClass='active',
+                   this.qrScannerClass = ''
+                   this.showForm=true
+                   this.showQrScanner=false
+               }
+           }
+       },
+             onDecode(content) {
           this.decodedContent = content
           var Encryption = new Encryption();
           var decrypted = Encryption.Decrypt(this.decodedContent);
@@ -85,21 +156,22 @@ export default{
             })
             .catch(error => {
               if (error.name === 'NotAllowedError') {
-                this.errorMessage = 'Hey! I need access to your camera'
+                this.qrScannerError = 'Hey! I need access to your camera'
               } else if (error.name === 'NotFoundError') {
-                this.errorMessage = 'Do you even have a camera on your device?'
+                this.qrScannerError = 'Do you even have a camera on your device?'
               } else if (error.name === 'NotSupportedError') {
-                this.errorMessage = 'Seems like this page is served in non-secure context (HTTPS, localhost or file://)'
+                this.qrScannerError = 'Seems like this page is served in non-secure context (HTTPS, localhost or file://)'
               } else if (error.name === 'NotReadableError') {
-                this.errorMessage = 'Couldn\'t access your camera. Is it already in use?'
+                this.qrScannerError = 'Couldn\'t access your camera. Is it already in use?'
               } else if (error.name === 'OverconstrainedError') {
-                this.errorMessage = 'Constraints don\'t match any installed camera. Did you asked for the front camera although there is none?'
+                this.qrScannerError = 'Constraints don\'t match any installed camera. Did you asked for the front camera although there is none?'
               } else {
-                this.errorMessage = 'UNKNOWN ERROR: ' + error.message
+                this.qrScannerError = 'UNKNOWN ERROR: ' + error.message
               }
             })
         }
-    }
+       
+},
+       
 }
 </script>
-
