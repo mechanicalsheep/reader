@@ -27,7 +27,7 @@ import Encryption from '../scripts/encrypt'
 
 export default {
 
-    name: 'Dev',
+    name: 'ResalaPrototype',
 data(){
     return{
         item:{
