@@ -7,6 +7,8 @@
           align-center
           justify-center
         >
+        {{user.username}}
+        <v-btn v-on:click="getUser()">Get User</v-btn>
           <v-flex
             xs12
             sm8
@@ -79,6 +81,7 @@
 import Encryption from "../scripts/encrypt"
 import {QrcodeStream} from 'vue-qrcode-reader'
 import firebase from "firebase"
+import db from "../database"
 export default {
 
     name: 'Login',
@@ -94,9 +97,13 @@ data(){
         qrScannerClass:'',
         showForm:true,
         showQrScanner:false,
-        qrScannerError:''
+        qrScannerError:'',
+        user:'loadingStudent'
        
     }
+},
+firestore :{
+
 },
 
     methods:{
@@ -106,15 +113,31 @@ data(){
             .signInWithEmailAndPassword(this.email, this.password)
             .then(data=>{
                 console.log("Success");
-                this.$toasted.success("SUCCESS, USER SIGNED IN, Welcome: "+this.email , {duration:6000})
-                this.$router.replace({name:"ReaderScreen"});
+                // this.$router.replace("/readerScreen")
+              // this.$firestore.user=db.collection('Users').doc(data.user.uid);
+                
             })
             .catch(err=>{
                 this.error=err.message;
                 console.log(this.error);
-                // this.loginMessage = "USER HAS FAILED TO LOG IN ("+this.email+", "+this.password+ ")"
+               
                 this.$toasted.error("Error logging in. Please make sure your username and password are correct", {duration:6000})
             });
+            console.log(this.$firestore.user);
+        },
+        getUser(){
+          var docRef = db.collection("Users").doc('6qIkrVtiHgYlpjapE9QEXYu5Yul2');
+          docRef.get().then(user=>{
+            if(user.exists){
+              var student = user.data();
+              console.log("success, Welcome "+student.username);
+              this.user=student;
+
+            }
+            else{
+              console.log("Document does not exist")
+            }
+          })
         },
        toggleActive(classname){
            if(classname==="textClass" && this.textClass==='active'){
