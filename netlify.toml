@@ -1,0 +1,8 @@
+[build]
+base="reader/"
+publish="reader/build"
+
+
+[context.staging]
+base="staging/"
+publish= "/reader/staging"
