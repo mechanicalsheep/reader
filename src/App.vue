@@ -6,11 +6,12 @@
       dark
     >
 
-
+{{user}}
       <v-spacer></v-spacer>
 
 
-        <span class="mr-2">Latest Release</span>
+
+        <v-btn class="mr-2" v-show="isLoggedIn()" v-on:click="logout()">Log Out</v-btn>
         <v-icon>mdi-open-in-new</v-icon>
       
     </v-app-bar>
@@ -23,7 +24,7 @@
 
 <script>
 
-
+import firebase from 'firebase'
 export default {
   name: 'App',
 
@@ -33,6 +34,20 @@ export default {
 
   data: () => ({
     //
+    user:''
   }),
+  methods:{
+    isLoggedIn(){
+      // console.log(firebase.auth().currentUser.uid)
+      return firebase.auth().currentUser!=null
+    },
+    logout(){
+      firebase.auth().signOut().then(result=>{
+        console.log("signed out.");
+        this.$router.replace("/login");
+      })
+    }
+  },
+
 };
 </script>

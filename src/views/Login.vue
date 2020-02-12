@@ -98,7 +98,7 @@ data(){
         showForm:true,
         showQrScanner:false,
         qrScannerError:'',
-        user:'loadingStudent'
+        user:'loadinguserData'
        
     }
 },
@@ -112,9 +112,27 @@ firestore :{
             .auth()
             .signInWithEmailAndPassword(this.email, this.password)
             .then(data=>{
+
                 console.log("Success");
-                // this.$router.replace("/readerScreen")
-              // this.$firestore.user=db.collection('Users').doc(data.user.uid);
+              var docref = db.collection('Users').doc(data.user.uid);
+              docref.get().then(user=>{
+                if(user.exists){
+                  console.log("user exists")
+                  var userData = user.data();
+                  this.$store.commit('setCurrentUser', userData);
+                  if (userData.roles.includes("superAdmin")){
+
+                    this.$router.replace('/adminDashboard');
+                  }
+                  else if(userData.roles.includes("userData")){
+                    this.$router.replace("/userDataDashboard");
+                  }
+                  else if(userData.roles.includes("parent")){
+                    this.$router.replace("/parentDashboard");
+                  }
+                  // console.log(this.$store.getters.getCurrentUser);
+                }
+              })
                 
             })
             .catch(err=>{
@@ -123,15 +141,18 @@ firestore :{
                
                 this.$toasted.error("Error logging in. Please make sure your username and password are correct", {duration:6000})
             });
-            console.log(this.$firestore.user);
+            // console.log(this.$firestore.user);
         },
         getUser(){
           var docRef = db.collection("Users").doc('6qIkrVtiHgYlpjapE9QEXYu5Yul2');
           docRef.get().then(user=>{
             if(user.exists){
-              var student = user.data();
-              console.log("success, Welcome "+student.username);
-              this.user=student;
+              var userData = user.data();
+              // console.log("success, Welcome "+userData.username);
+              this.user=userData;
+              
+              this.$store.commit('setCurrentUser',userData);
+              console.log(this.$store.getters.getCurrentUser)
 
             }
             else{

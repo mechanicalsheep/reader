@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currentPage:0,
-      currentBook:''
+      currentBook:'',
+      currentUser:''
 
   },
     getters:{
@@ -16,9 +17,15 @@ export default new Vuex.Store({
       },
         getCurrentBook:state=>{
             return state.currentBook
-}
+      },
+      getCurrentUser:state=>{
+        return state.currentUser;
+      }
     },
   mutations: {
+    setCurrentUser:(state, user)=>{
+      state.currentUser=user;
+    },
     setCurrentPage:(state, payload)=> {
         if(payload>=0 && payload < book.pageCount){
 

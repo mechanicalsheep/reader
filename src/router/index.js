@@ -3,13 +3,14 @@ import VueRouter from 'vue-router'
 import firebase, { database } from 'firebase'
 import ReaderScreen from '../views/ReaderScreen'
 import db from '../database'
+import store from '../store'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect:'/login'
+    redirect:'/adminDashboard'
   },
   {
     path: '/readerScreen',
@@ -32,10 +33,26 @@ const routes = [
     }
   },
   {
+    path: '/adminDashboard',
+    name: 'AdminDashboard',
+    component: function () {
+      return import('../views/AdminDashboard.vue')
+    },
+    meta:{
+      requiresAuth:false
+      // requiresAuth: true,
+      // allowedRoles: 'superAdmin'
+    }
+  },
+  {
     path: '/staffDashboard',
     name: 'StaffDashboard',
     component: function () {
       return import('../views/StaffDashboard.vue')
+    },
+    meta:{
+      requiresAuth: true,
+      allowedRoles: 'staff'
     }
   },
   {
@@ -43,6 +60,10 @@ const routes = [
     name: 'StudentDashboard',
     component: function () {
       return import('../views/StudentDashboard.vue')
+    },
+    meta:{
+      requiresAuth: true,
+      allowedRoles: 'studentAdmin'
     }
   },
   {
@@ -65,6 +86,10 @@ const routes = [
   {
     path: '/login',
     name: 'login',
+    meta:{
+      requiresAuth:false,
+      allowedRoles:''
+    },
     component: function(){
       return import('../views/Login.vue')
     }
@@ -78,37 +103,48 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next)=>{
+  // console.log(store.getters.getCurrentUser);
+  
   const currentUser = firebase.auth().currentUser;
   // debugger;
   var currentUserData;
   if(currentUser!=null){
-   currentUserData = db.collection('Users').doc(currentUser.uid);
-
+    currentUserData=store.getters.getCurrentUser;
+  //  currentUserData = db.collection('Users').doc(currentUser.uid);
+  if(currentUser.uid== currentUserData.id){}
+// console.log("current user is the same as the authenticated")
   }
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const allowedRoles = to.matched.some(record=> record.meta.allowedRoles);
+  var allowedRoles="";
+  try{
 
+    allowedRoles = to.matched[0].meta.allowedRoles;//to.matched.some(record=> record.meta.allowedRoles);
+    // console.log(allowedRoles)
+  }
+  catch{
+    console.log("no roles")
+  }
+  if(allowedRoles!=null){
+
+    // console.log(allowedRoles);
+  }
   if(requiresAuth && !currentUser) next('login');
   else if (!requiresAuth && currentUser) next();
   else if(requiresAuth && currentUser){
-    if(from.path==='/login' && currentUser.roles === allowedRoles){
-      console.log("allowed user.")
-      next('ReaderScreen');
+    if(from.path==='/login' && currentUserData.roles.includes(allowedRoles)){
+      console.log("allowed user role. " +allowedRoles)
+      next();
+    }
+    else{
+      console.log("not allowed user "+ currentUserData.username)
+      console.log("needed role: "+ allowedRoles)
+      console.log("current roles: "+ currentUserData.roles[0]);
+      next('/login')
     }
     var self=this;
     let user = '';
     let data;
     
-//     data = async() =>{
-//       var mew = await currentUserData.get().then(async (snapshot)=>{return await snapshot.data()});
-//       self.user= await mew;
-//       console.log(mew)
-//       return mew.username;
-//     }
-// const username=data();
-// console.log(user)
-// something.then(user=>{username=user.username})
-//  console.log(username);
   }
   else{
     next();
