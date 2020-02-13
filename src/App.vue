@@ -9,11 +9,14 @@
 {{user}}
       <v-spacer></v-spacer>
 
+<div v-show="isLoggedIn()">
 
+        <v-btn class="mr-2" v-on:click="showUser()">Show Current User</v-btn>
+        <v-btn class="mr-2" v-on:click="logout()">Log Out</v-btn>
 
-        <v-btn class="mr-2" v-show="isLoggedIn()" v-on:click="logout()">Log Out</v-btn>
         <v-icon>mdi-open-in-new</v-icon>
       
+</div>
     </v-app-bar>
 
     <v-content >
@@ -46,6 +49,15 @@ export default {
         console.log("signed out.");
         this.$router.replace("/login");
       })
+    },
+    showUser(){
+      var currentUser = firebase.auth().currentUser;
+      this.$toasted.info(currentUser.email + "  is logged on", 
+      {
+        text : 'Close',
+        onClick : (e, toastObject) => {
+         toastObject.goAway(0);
+        }})
     }
   },
 

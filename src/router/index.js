@@ -13,6 +13,30 @@ const routes = [
     redirect:'/adminDashboard'
   },
   {
+    path: '/addUser',
+    name: 'AddUser',
+    component: function () {
+      return import('../views/AddUser.vue')
+    },
+    meta:{
+      //TODOS change later,  only super admin would be able to add users.
+      requiresAuth: false,
+      allowedRoles: ''
+    }
+  },
+  {
+    path: '/storyCreator',
+    name: 'StoryCreator',
+    component: function () {
+      return import('../views/StoryCreator.vue')
+    },
+    meta:{
+      //TODOS change later,  only super admin would be able to add users.
+      requiresAuth: false,
+      allowedRoles: ''
+    }
+  },
+  {
     path: '/readerScreen',
     name: 'ReaderScreen',
     component: ReaderScreen,
