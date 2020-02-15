@@ -6,7 +6,7 @@
 <v-card-title>Book Viewer <v-btn v-on:click="update">Save</v-btn></v-card-title>
 <v-card-text  >
    
-   <span v-for="(content, name) in bookContent" :key=content>
+   <span v-for="(content, name) in bookContent" :key=content+name>
        <v-btn v-on:click="testUpdate(name,content)">upd</v-btn>
 <span v-if="name!='pages'">
 
@@ -17,7 +17,7 @@
 <span>{{name}}</span> 
        </v-col>
        <v-col cols="4">
-          <input type="text" style="width:100%;" :placeholder="content"/>
+          <input  type="text" style="width:100%;" :id="name+content" :value="content" />
        </v-col>
        <!-- <v-col cols="3" style="padding:0;">
            <v-btn text icon v-on:click="isDisabled=!isDisabled"><v-icon size="medium">mdi-pencil-outline</v-icon></v-btn>
@@ -29,7 +29,7 @@
 <v-expansion-panels flat>
     
 
-<v-expansion-panel v-for="pages in bookContent.pages" :key=pages >
+<v-expansion-panel v-for="pages in bookContent.pages" :key=pages+bookContent >
 <v-expansion-panel-header style="padding:0;">Page {{pages.page}}</v-expansion-panel-header>
 <v-expansion-panel-content> stuff</v-expansion-panel-content>
 <!-- <span v-for="pages in bookContent.pages">
@@ -78,10 +78,13 @@ export default {
             // this.$emit("update-book", this.bookContent )
             console.log(this.book)
         },
-        testUpdate(prop, value){
+        testUpdate(name, content){
             //TODOS you were checking out how to edit the object programatically.
-            this.book[prop]
-            console.log(this.book[prop]);
+            // this.book[prop]
+             var inputVal = document.getElementById(name+content).value;
+             console.log("got this from element: "+inputVal)
+            this.$emit('update-book',name, inputVal);
+            // console.log(this.book[prop]);
         },
         printBook(){
             this.bookContent.title="CHANGEDTITLE";

@@ -4,7 +4,7 @@
         <v-row>
             
             <v-col cols="4">
-                <BookContentViewer :book-content="book" @update-book="updateBook"></BookContentViewer>
+                <BookContentViewer :book-content="book" @update-book="function(name, value){updateBook(name, value)}"></BookContentViewer>
             </v-col>
             
             <v-col>
@@ -26,8 +26,15 @@ export default{
         SceneView,
         BookContentViewer
     },
+    created(){
+
+        this.book.pageSize=this.book.pages.length;
+        console.log(this.book.pageSize);
+    },
     mounted(){
-      this.getPageSize()
+        },
+    beforeMount(){
+        
     },
     data(){
         return{
@@ -48,16 +55,18 @@ export default{
         },
             methods:{
                 getPageSize(){
-                    this.pageSize=this.book.pages.length;
+                    this.book.pageSize=this.book.pages.length;
               
-                   console.log(this.book.pages.length)
+                   console.log(this.book.pageSize)
                 },
                 updateTitle(newTitle){
                     console.log("updating title")
                     // this.title=newTitle;
                 },
-                updateBook(payload){
-                   this.book=payload;
+                updateBook(name, value){
+                    getPageSize();
+                   this.book[name]= value;
+                   console.log("Changed "+ name+ " to " + value);
                    console.log(this.book)
 
                 }
