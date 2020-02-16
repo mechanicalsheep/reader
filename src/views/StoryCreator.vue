@@ -1,17 +1,29 @@
 <template>
     <v-container style="border:1px solid black;">
      
-        <v-row>
-            
-            <v-col cols="4">
-                <BookContentViewer :book-content="book" @update-book="function(name, value){updateBook(name, value)}"></BookContentViewer>
-            </v-col>
-            
-            <v-col>
-                <v-textarea solo placeholder="Enter story Text here." style="margin-bottom:50px;"></v-textarea>
-            </v-col>
+     <v-layout row>
+        <v-flex d-flex xs12 sm6 md4>
 
-        </v-row>
+            <v-col>
+                <BookContentViewer @go-to="function(index){GoTo(index)}" :book-content="book" @update-book="function(name, value){updateBook(name, value)}"></BookContentViewer>
+            </v-col>
+        </v-flex>
+<v-flex d-flex xs12 sm6 md6>
+
+<v-layout column wrap>
+
+             <v-flex d-flex wrap>
+                <v-textarea style="min-width:65vh; max-width:65vh;" solo :value="book.pages[currentPage].text" >{{book.pages[currentPage].text}}</v-textarea>
+            </v-flex>
+                    <v-flex d-flex >
+                    <Uploader></Uploader>
+                    </v-flex>
+  
+            
+</v-layout>
+</v-flex>
+     </v-layout>
+      
     </v-container>
 </template>
 
@@ -19,16 +31,21 @@
 import TextView from '../components/TextView'
 import SceneView from '../components/SceneView'
 import BookContentViewer from '../components/BookContentViewer'
+import Uploader from '../components/Uploader'
+
+
 export default{
     name:"StoryCreator",
     components:{
         TextView,
         SceneView,
-        BookContentViewer
+        BookContentViewer,
+        Uploader
     },
+    
     created(){
 
-        this.book.pageSize=this.book.pages.length;
+        this.book.pageSize=Object.keys(this.book.pages).length;
         console.log(this.book.pageSize);
     },
     mounted(){
@@ -38,22 +55,39 @@ export default{
     },
     data(){
         return{
+           
+        
+            preview:null,
+            currentPage:0,
             book:{
                 title:'hello',
                 author:'',
                 pageSize:0,
-                pages:[
-                    {
-                        page:0,
-                        text:"the testing testers",
-                        img:"image"
+                pages:
+                  {
+                      0:{
+
+                          text:"the testing testers",
+                          img:"image"
+                      },
+                      1:{
+
+                          text:"Second Page",
+                          img:"image"
+                      }
+                        
                     }
-                ]
+
+                
             }
 
         }
         },
             methods:{
+             GoTo(index){
+                 this.currentPage=index;
+console.log("Will go to "+index);
+    },
                 getPageSize(){
                     this.book.pageSize=this.book.pages.length;
               
@@ -69,6 +103,9 @@ export default{
                    console.log("Changed "+ name+ " to " + value);
                    console.log(this.book)
 
+                },
+                addPage(page){
+                    this.book.pages.push(page);
                 }
             }
     

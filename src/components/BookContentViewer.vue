@@ -7,31 +7,55 @@
 <v-card-text  >
    
    <span v-for="(content, name) in bookContent" :key=content+name>
-       <v-btn v-on:click="testUpdate(name,content)">upd</v-btn>
+       <!-- <v-btn v-on:click="testUpdate(name,content)">upd</v-btn> -->
 <span v-if="name!='pages'">
 
-       <v-row>
+       <!-- <v-row>
 
-       <v-col cols="4"  >
+       <v-col cols="4"  > -->
+<v-layout row>
+<v-flex d-flex>
 
-<span>{{name}}</span> 
-       </v-col>
-       <v-col cols="4">
-          <input  type="text" style="width:100%;" :id="name+content" :value="content" />
-       </v-col>
-       <!-- <v-col cols="3" style="padding:0;">
-           <v-btn text icon v-on:click="isDisabled=!isDisabled"><v-icon size="medium">mdi-pencil-outline</v-icon></v-btn>
-       </v-col> -->
-       </v-row>
+<span>{{name}}:</span> 
+</v-flex>
+       <!-- </v-col> -->
+       <!-- <v-col cols="4"> -->
+           <v-flex d-flex>
+
+           <template v-if="name==='pageSize'">
+            <v-flex d-flex xs4 md6>
+
+               <p>{{content}}</p>
+            </v-flex>
+           </template>
+           <template v-else>
+               <v-flex d-flex>
+
+                <input  type="text" :id="name+content" :value="content" />
+               </v-flex>
+               <v-flex d-flex>
+<v-spacer></v-spacer>
+                <v-icon @click="testUpdate(name,content)">mdi-pencil-outline</v-icon>
+               </v-flex>
+           </template>
+           </v-flex>
+       <!-- </v-col> -->
+</v-layout>
+    
+       <!-- </v-row> -->
    </span>
 
 </span>
 <v-expansion-panels flat>
     
-
-<v-expansion-panel v-for="pages in bookContent.pages" :key=pages+bookContent >
+<v-list>
+    <v-list-item v-for="(pages, index) in bookContent.pages" :key=index>
+        <v-list-item @click="Goto(index)" fill-width active-class="">Page {{index}}</v-list-item>
+    </v-list-item>
+</v-list>
+<!-- <v-expansion-panel v-for="pages in bookContent.pages" :key=pages+bookContent >
 <v-expansion-panel-header style="padding:0;">Page {{pages.page}}</v-expansion-panel-header>
-<v-expansion-panel-content> stuff</v-expansion-panel-content>
+<v-expansion-panel-content> stuff</v-expansion-panel-content> -->
 <!-- <span v-for="pages in bookContent.pages">
     <v-expansion-panel-header>Page: {{page.page}}</v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -69,10 +93,16 @@ export default {
             headers:[{text:' name'}],
             style:'',
             book:this.bookContent,
+            currentPage:0
         }
     },
   
     methods:{
+        Goto(index){
+        // console.log("will go to page "+ index)
+        this.currentPage=index;
+        this.$emit('go-to',this.currentPage);
+        },
         update(){
             // console.log("attempting to emit update-"+name)
             // this.$emit("update-book", this.bookContent )
