@@ -48,7 +48,7 @@ export default{
      
     
     created(){
-debugger;
+
 if(this.book!=null){
 
     this.book.pageSize=Object.keys(this.book.pages).length;
@@ -74,27 +74,7 @@ if(this.book!=null){
         
             preview:null,
             currentPage:0,
-            // book:{
-            //     title:'hello',
-            //     author:'',
-            //     pageSize:0,
-            //     pages:
-            //       {
-            //           0:{
-
-            //               text:"the testing testers",
-            //               img:"image"
-            //           },
-            //           1:{
-
-            //               text:"Second Page",
-            //               img:"image"
-            //           }
-                        
-            //         }
-
-                
-            // }
+            
 
         }
         },
