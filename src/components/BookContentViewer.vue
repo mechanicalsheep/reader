@@ -25,16 +25,16 @@
            <template v-if="name==='pageSize'">
             <v-flex d-flex xs4 md6>
 
-               <p>{{content}}</p>
+               <p class="font-weight-bold">{{content}}</p>
             </v-flex>
            </template>
            <template v-else>
-               <v-flex d-flex>
+               <v-flex d-inline-flex>
 
-                <input  type="text" :id="name+content" :value="content" />
+                <input  type="text" :id="name+content" :value="content" style="width:152px" />
                </v-flex>
                <v-flex d-flex>
-<v-spacer></v-spacer>
+        <v-spacer></v-spacer>
                 <v-icon @click="testUpdate(name,content)">mdi-pencil-outline</v-icon>
                </v-flex>
            </template>
@@ -53,20 +53,7 @@
         <v-list-item @click="Goto(index)" fill-width active-class="">Page {{index}}</v-list-item>
     </v-list-item>
 </v-list>
-<!-- <v-expansion-panel v-for="pages in bookContent.pages" :key=pages+bookContent >
-<v-expansion-panel-header style="padding:0;">Page {{pages.page}}</v-expansion-panel-header>
-<v-expansion-panel-content> stuff</v-expansion-panel-content> -->
-<!-- <span v-for="pages in bookContent.pages">
-    <v-expansion-panel-header>Page: {{page.page}}</v-expansion-panel-header>
-    <v-expansion-panel-content>
 
-    <span v-for="(page,name) in pages">
-        <p>{{name}}: {{page}}</p>
-    </span>
-    </v-expansion-panel-content>
-    <p>hahaha</p>
-</span> -->
-</v-expansion-panel>
 </v-expansion-panels>    
 </v-card-text>
 </v-card>

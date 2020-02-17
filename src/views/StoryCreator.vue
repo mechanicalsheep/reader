@@ -16,7 +16,7 @@
                 <v-textarea style="min-width:65vh; max-width:65vh;" solo :value="book.pages[currentPage].text" >{{book.pages[currentPage].text}}</v-textarea>
             </v-flex>
                     <v-flex d-flex >
-                    <Uploader></Uploader>
+                    <Uploader @update-url="(url)=>{UpdateURL(url)}"></Uploader>
                     </v-flex>
   
             
@@ -32,6 +32,7 @@ import TextView from '../components/TextView'
 import SceneView from '../components/SceneView'
 import BookContentViewer from '../components/BookContentViewer'
 import Uploader from '../components/Uploader'
+import db from '../database'
 
 
 export default{
@@ -42,15 +43,29 @@ export default{
         BookContentViewer,
         Uploader
     },
+    props:
+        ['book'],
+     
     
     created(){
+debugger;
+if(this.book!=null){
 
-        this.book.pageSize=Object.keys(this.book.pages).length;
-        console.log(this.book.pageSize);
+    this.book.pageSize=Object.keys(this.book.pages).length;
+}
+        // console.log(this.book.pageSize);
     },
     mounted(){
         },
     beforeMount(){
+       if(this.book==null){
+           db.collection('Books').doc('Ii9JvoX8gF90zyNtB2E6').get().then(booksnapshot=>{
+               var book = booksnapshot.data();
+               this.book=book;
+               this.book.pageSize=Object.keys(this.book.pages).length;
+               console.log("loaded book from db")
+           })
+       }
         
     },
     data(){
@@ -59,31 +74,36 @@ export default{
         
             preview:null,
             currentPage:0,
-            book:{
-                title:'hello',
-                author:'',
-                pageSize:0,
-                pages:
-                  {
-                      0:{
+            // book:{
+            //     title:'hello',
+            //     author:'',
+            //     pageSize:0,
+            //     pages:
+            //       {
+            //           0:{
 
-                          text:"the testing testers",
-                          img:"image"
-                      },
-                      1:{
+            //               text:"the testing testers",
+            //               img:"image"
+            //           },
+            //           1:{
 
-                          text:"Second Page",
-                          img:"image"
-                      }
+            //               text:"Second Page",
+            //               img:"image"
+            //           }
                         
-                    }
+            //         }
 
                 
-            }
+            // }
 
         }
         },
             methods:{
+                UpdateURL(url){
+                    // console.log("updateing urls")
+                    this.book.pages[this.currentPage].img=url;
+                    console.log("URL of page "+this.currentPage+" is: "+this.book.pages[this.currentPage].img)
+                },
              GoTo(index){
                  this.currentPage=index;
 console.log("Will go to "+index);

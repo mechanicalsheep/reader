@@ -2,8 +2,8 @@
   <div>
     <div >
         <!-- <img class="preview" :src="picture"> -->
-         <p>Progress: {{uploadValue.toFixed()+"%"}}
-      <progress id="progress" :value="uploadValue" max="100" ></progress>  </p>
+         <p v-show="uploadValue>0">Progress: {{uploadValue.toFixed()+"%"}}
+      <progress v-show="uploadValue>0" id="progress" :value="uploadValue" max="100" ></progress>  </p>
         <!-- <br> -->
         
                 <img :src="picture" style="width:65vh; height:60vh; border:1px solid black;"/>
@@ -47,6 +47,7 @@ export default {
       ()=>{this.uploadValue=100;
         storageRef.snapshot.ref.getDownloadURL().then((url)=>{
           this.picture =url;
+          this.$emit("update-url", url);
         });
       }
       );
