@@ -2,14 +2,14 @@ import firebase from "firebase";
 import "firebase/firestore";
 
 const firebaseConfig = {
-  // name: "codesandbox-trivial",
-  apiKey: "AIzaSyADqBAc-ASDSfD7aYdFo-4SAZ_Nb3pGfAo",
-  authDomain: "trivial-93599.firebaseapp.com",
-  databaseURL: "https://trivial-93599.firebaseio.com",
-  projectId: "trivial-93599",
-  storageBucket: "trivial-93599.appspot.com",
-  messagingSenderId: "872805106836",
-  appId: "1:872805106836:web:4454535ffbd12ad13f6081"
+  apiKey: "AIzaSyABY8z03ZmutD_K3C-NxhvGcHhfGWo0YtI",
+    authDomain: "nurture-academy-f5c0e.firebaseapp.com",
+    databaseURL: "https://nurture-academy-f5c0e.firebaseio.com",
+    projectId: "nurture-academy-f5c0e",
+    storageBucket: "nurture-academy-f5c0e.appspot.com",
+    messagingSenderId: "64773453703",
+    appId: "1:64773453703:web:b548f1cba518302c310522",
+    measurementId: "G-7JWLSEEGSB"
 };
 // Initialize Firebase
 const db = firebase.initializeApp(firebaseConfig);

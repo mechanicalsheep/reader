@@ -1,12 +1,20 @@
 <template>
     <div>
         <div>
-            <v-text-field :v-model="message" placeholder="Enter Text"></v-text-field>
-            <v-btn v-on:click="encrypt()">Generate QR Code</v-btn>
+            <div>
+                <v-text-field :v-model="message" placeholder="Enter Text"></v-text-field>
+                <v-btn v-on:click="test()">Generate QR Code</v-btn>
+
+            </div>
+            <div>
+                 <v-text-field :v-model="decrypted" placeholder="Enter encryption"></v-text-field>
+                <v-btn v-on:click="decrypt()">Generate QR Code</v-btn>
+            </div>
+
         </div>
         <div v-show="showQr">
             <!-- {{encrypted}} -->
-            <qrcode-vue style="margin-top: 20px; margin-left: 20px;" :value="encrypted"> </qrcode-vue>
+            <qrcode-vue style="margin-top: 20px; margin-left: 20px;" :value="encryptedString"> </qrcode-vue>
         </div>
     </div>
 </template>
@@ -14,6 +22,7 @@
 <script>
 import QrcodeVue from 'qrcode.vue'
 import Encryption from '../scripts/encrypt'
+
 // import something from '../scripts/encrypt'
 
 export default{
@@ -33,14 +42,20 @@ this.initialize();
             QRValue:'',
             name:'',
             picture:'',
-            message:'hello',
+            message:'',
             encrypted:'',
+            encryptedString:'',
             showQr:false,
             CryptoJS:'',
-            Encryption: ''
+            Encryption: '',
+            decrypted:''
         }
     },
     methods:{
+        test(){
+            this.Encryption.change();
+        this.Encryption.test();
+        },
         initialize(){
             this.Encryption = new Encryption();
             // this.Encryption.test();
@@ -48,13 +63,28 @@ this.initialize();
    
         encrypt(){
         //    var CryptoJS=require("crypto-js");
-            var e = this.Encryption.Encrypt(this.message);
-            this.encrypted=e;
+        
+        var CryptoJS=require("crypto-js");
+        var e = CryptoJS.AES.encrypt(this.message, "foxtrotlittlecat");
+        
+        // this.encrypted = e;
+        // this.encryptedString = e.toString();
+        // this.encrypted = e;
+       
+        // console.log("encryption "+e.toString());
+        var d = CryptoJS.AES.decrypt(e,"foxtrotlittlecat");
+        console.log(CryptoJS.AES.decrypt(e,"foxtrotlittlecat").toString(CryptoJS.enc.Utf8));
+        // console.log(this.Encryption.GetEncryptString(this.encrypted));
+        // this.encryptedString=this.encrypted.toString();
+            // this.encrypted = crypted.toString();
+            // this.encrypted=e.toString();
            
-            this.showQr=true;
+            // this.showQr=true;
         },
-        decrypt(encryptedVar){
-            
+        decrypt(){
+            console.log("decrypting: "+ this.encrypted.toString())
+            var d = this.Encryption.Decrypt(this.encrypted);
+            console.log(d);
         }
     }
 }

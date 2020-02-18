@@ -1,26 +1,45 @@
 class Encryption{
       
 
-   
-  Encrypt(message){
-    let CryptoJS=require("crypto-js");
+  constructor(){
+      this.word="bird";
 
-        let encryption =CryptoJS.AES.encrypt(message, "foxtrotlittlecat");
-        console.log(encryption.toString());
-        return encryption.toString();
-    }
+      this.CryptoJS=require("crypto-js");
+      this.encryption="";
+      this.encryptionString="";
+      this.decryption="";
+  }
+Encrypt(message){
+    this.encryption=this.CryptoJS.AES.encrypt(message,this.word);
+    console.log(this.encryption.toString());
+    // this.encryptionString=this.encryption.toString();
+}
+//   Encrypt(message){
+//     // let CryptoJS=require("crypto-js");
 
-    Decrypt(encryptionString){
-        let CryptoJS=require("crypto-js");
+//         this.encryption =this.CryptoJS.AES.encrypt(message, "foxtrotlittlecat");
+//         console.log(this.encryption.toString());
+//         return this.encryption;
+//     }
+//     GetEncryptString(encryption){
+//         console.log(encryption.toString());
+//         // return encryption.toString();
+//     }
+
+//     Decrypt(encryption){
+//         // let CryptoJS=require("crypto-js");
         
         
-        let decryption = CryptoJS.AES.decrypt(encryptionString,"foxtrotlittlecat");
-        console.log(decryption.toString());
-        return decryption.toString();
-    }
+//         this.decryption = this.CryptoJS.AES.decrypt(encryption,"foxtrotlittlecat");
+//         console.log(this.decryption.toString(this.CryptoJS.enc.Utf8));
+//         return this.decryption.toString(this.CryptoJS.enc.Utf8);
+//     }
 
     test(){
-        console.log("test succeeded from encryption.");
+        console.log(this.word);
+    }
+    change(){
+        this.word = "notBird";
     }
 
 }
