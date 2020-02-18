@@ -29,8 +29,9 @@ export default {
       imageData: null,
       picture: null,
       uploadValue: 0
-	}
+    }
   },
+  props: ['bookId'],
   methods:{
     previewImage(event) {
       this.uploadValue=0;
@@ -40,7 +41,7 @@ export default {
 
     onUpload(){
       this.picture=null;
-      const storageRef=firebase.storage().ref(`test/${this.imageData.name}/`).put(this.imageData);
+      const storageRef=firebase.storage().ref(`${this.bookId}/${this.imageData.name}/`).put(this.imageData);
       storageRef.on(`state_changed`,snapshot=>{
         this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
       }, error=>{console.log(error.message)},

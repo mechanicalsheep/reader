@@ -12,11 +12,16 @@
 
 <v-layout column wrap>
 
+            <v-flex >
+                 <v-btn v-if="!isEditting" @click="isEditting=!isEditting">Edit</v-btn>
+                 <v-btn v-else @click="isEditting=!isEditting"> Save</v-btn>
+
+            </v-flex>
              <v-flex d-flex wrap>
-                <v-textarea style="min-width:65vh; max-width:65vh;" solo :value="book.pages[currentPage].text" >{{book.pages[currentPage].text}}</v-textarea>
+                <v-textarea :disabled="!isEditting" style="min-width:65vh; max-width:65vh;" solo :value="book.pages[currentPage].text" >{{book.pages[currentPage].text}}</v-textarea>
             </v-flex>
                     <v-flex d-flex >
-                    <Uploader @update-url="(url)=>{UpdateURL(url)}"></Uploader>
+                    <Uploader @update-url="(url)=>{UpdateURL(url)}"  :book-id="book.id"></Uploader>
                     </v-flex>
   
             
@@ -26,7 +31,11 @@
       
     </v-container>
 </template>
-
+<style>
+.v-text-field__details{
+    display:none;
+}
+</style>
 <script>
 import TextView from '../components/TextView'
 import SceneView from '../components/SceneView'
@@ -74,6 +83,7 @@ if(this.book!=null){
         
             preview:null,
             currentPage:0,
+            isEditting:false
             
 
         }
@@ -98,12 +108,21 @@ console.log("Will go to "+index);
                     // this.title=newTitle;
                 },
                 updateBook(name, value){
-                    getPageSize();
+                    // getPageSize();
                    this.book[name]= value;
+                //    db.collection('Books').
                    console.log("Changed "+ name+ " to " + value);
                    console.log(this.book)
 
                 },
+                // updateBook(updatedBook){
+                //     db.collection('Books').doc(this.book.id).set({
+                //         updatedBook,
+                        
+                //     }, {merge:true})
+                    
+
+                // },
                 addPage(page){
                     this.book.pages.push(page);
                 }
