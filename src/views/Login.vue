@@ -8,7 +8,7 @@
           justify-center
         >
         {{user.username}}
-        <v-btn v-on:click="getUser()">Get User</v-btn>
+        <!-- <v-btn v-on:click="getUser()">Get User</v-btn> -->
           <v-flex
             xs12
             sm8

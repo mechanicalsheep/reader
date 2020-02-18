@@ -5,7 +5,7 @@
       color="pink"
       dark
     >
-
+<h2 class="cursive justify-center align-center" style="text-align:center">Nurture Academy</h2>
 {{user}}
       <v-spacer></v-spacer>
 
@@ -63,3 +63,10 @@ export default {
 
 };
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
+.cursive{
+font-family: 'Pacifico', cursive;
+}
+</style>
