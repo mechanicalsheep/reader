@@ -91,8 +91,8 @@ export default {
     },
 data(){
     return{
-        email:'asd@asd.com',
-        password:'123456',
+        email:'',
+        password:'',
         textClass:'active',
         qrScannerClass:'',
         showForm:true,
