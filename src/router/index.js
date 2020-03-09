@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect:'/adminDashboard'
+    redirect:'/login'
   },
   {
     path: '/addUser',
@@ -63,9 +63,9 @@ const routes = [
       return import('../views/AdminDashboard.vue')
     },
     meta:{
-      requiresAuth:false
-      // requiresAuth: true,
-      // allowedRoles: 'superAdmin'
+      // requiresAuth:false
+      requiresAuth: true,
+      allowedRoles: ['parent','superAdmin']
     }
   },
   {
@@ -82,12 +82,13 @@ const routes = [
   {
     path: '/studentDashboard',
     name: 'StudentDashboard',
+    props:true,
     component: function () {
       return import('../views/StudentDashboard.vue')
     },
     meta:{
-      requiresAuth: true,
-      allowedRoles: 'studentAdmin'
+      // requiresAuth: true,
+      // allowedRoles: 'studentAdmin'
     }
   },
   {
@@ -155,7 +156,8 @@ router.beforeEach((to, from, next)=>{
   if(requiresAuth && !currentUser) next('login');
   else if (!requiresAuth && currentUser) next();
   else if(requiresAuth && currentUser){
-    if(from.path==='/login' && currentUserData.roles.includes(allowedRoles)){
+    //check if use has one of the roles allowed for this page.
+    if(currentUserData.roles.some(r=> allowedRoles.includes(r))){
       console.log("allowed user role. " +allowedRoles)
       next();
     }
@@ -163,6 +165,7 @@ router.beforeEach((to, from, next)=>{
       console.log("not allowed user "+ currentUserData.username)
       console.log("needed role: "+ allowedRoles)
       console.log("current roles: "+ currentUserData.roles[0]);
+      console.log(currentUserData.roles.includes(allowedRoles));
       next('/login')
     }
     var self=this;
