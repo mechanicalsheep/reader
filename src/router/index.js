@@ -25,11 +25,24 @@ const routes = [
     }
   },
   {
+    path: '/myLibrary',
+    name: 'MyLibrary',
+    component: function () {
+      return import('../views/MyLibrary.vue')
+    },
+    meta:{
+      //TODOS change later, 
+      requiresAuth: false,
+      allowedRoles: ''
+    }
+  },
+  {
     path: '/storyCreator',
     name: 'StoryCreator',
     component: function () {
       return import('../views/StoryCreator.vue')
     },
+    props:true,
     meta:{
       //TODOS change later,  only super admin would be able to add users.
       requiresAuth: false,
