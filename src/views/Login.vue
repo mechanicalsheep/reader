@@ -50,7 +50,7 @@
                   ></v-text-field>
                 </v-form>
 
-                <div v-show="showQrScanner">
+                <div v-if="showQrScanner">
 <!-- <p>Last result: <b>{{ decodedContent }}</b></p>
 <p class="error">{{ qrScannerError }}</p> -->
 <p class="error">{{ qrScannerError }}</p>
